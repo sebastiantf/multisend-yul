@@ -43,15 +43,6 @@ contract Multisend {
                         break
                     }
                 }
-
-                /* return excess ether to sender */
-                if gt(balance(address()), 0) {
-                    if iszero(
-                        call(gas(), caller(), balance(address()), 0, 0, 0, 0)
-                    ) {
-                        revert(0, 0)
-                    }
-                }
             }
         }
     }
