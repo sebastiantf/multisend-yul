@@ -95,4 +95,18 @@ contract MultisendTest is Test {
         multisend.multisendEther{value: totalEther}(recipients, amounts);
         vm.stopPrank();
     }
+
+    function test_multisendTokenCompareGaslite() public {
+        vm.startPrank(user);
+        token.approve(address(multisend), totalTokens);
+
+        address[] memory recipients = new address[](totalTokens);
+        uint256[] memory amounts = new uint256[](totalTokens);
+        for (uint256 i = 0; i < totalTokens; i++) {
+            recipients[i] = vm.addr(2);
+            amounts[i] = 1;
+        }
+        multisend.multisendToken(address(token), recipients, amounts);
+        vm.stopPrank();
+    }
 }
