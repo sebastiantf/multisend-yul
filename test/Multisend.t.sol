@@ -1,6 +1,6 @@
 pragma solidity 0.8.19;
 
-import {Multisend, IERC20} from "./../src/Multisend.sol";
+import {Multisend} from "./../src/Multisend.sol";
 import {Token} from "./Token.sol";
 import "forge-std/Test.sol";
 
@@ -27,7 +27,7 @@ contract MultisendTest is Test {
             recipients[i] = vm.addr(i + 1);
             amounts[i] = 1;
         }
-        multisend.multisendToken(IERC20(address(token)), recipients, amounts);
+        multisend.multisendToken(address(token), recipients, amounts);
         vm.stopPrank();
 
         for (uint256 i = 0; i < totalTokens; i++) {

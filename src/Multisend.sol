@@ -1,16 +1,6 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-interface IERC20 {
-    function transfer(address to, uint256 value) external returns (bool);
-
-    function transferFrom(
-        address from,
-        address to,
-        uint256 value
-    ) external returns (bool);
-}
-
 contract Multisend {
     function multisendEther(
         address[] calldata recipients,
@@ -67,7 +57,7 @@ contract Multisend {
     }
 
     function multisendToken(
-        IERC20 token,
+        address token,
         address[] calldata recipients,
         uint256[] calldata values
     ) external {
