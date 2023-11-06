@@ -16,12 +16,14 @@ contract Multisend {
         address[] calldata recipients,
         uint256[] calldata values
     ) external payable {
+        // transfer ether to recipients
         for (uint256 i = 0; i < recipients.length; ) {
             payable(recipients[i]).transfer(values[i]);
             unchecked {
                 ++i;
             }
         }
+        // return excess ether to sender
         uint256 balance = address(this).balance;
         if (balance > 0) payable(msg.sender).transfer(balance);
     }
@@ -31,6 +33,7 @@ contract Multisend {
         address[] calldata recipients,
         uint256[] calldata values
     ) external {
+        // calculate total amount of tokens to transfer
         uint256 total = 0;
         for (uint256 i = 0; i < recipients.length; ) {
             total += values[i];
@@ -38,7 +41,9 @@ contract Multisend {
                 ++i;
             }
         }
+        // transfer tokens to this contract
         require(token.transferFrom(msg.sender, address(this), total));
+        // transfer tokens to recipients
         for (uint256 i = 0; i < recipients.length; ) {
             require(token.transfer(recipients[i], values[i]));
             unchecked {
