@@ -73,12 +73,33 @@ contract Multisend {
     ) external {
         // calculate total amount of tokens to transfer
         uint256 total = 0;
-        for (uint256 i = 0; i < recipients.length; ) {
-            total += values[i];
-            unchecked {
-                ++i;
+        assembly {
+            if recipients.length {
+                // end = start of recipients array + length * 32 bytes
+                let end := add(recipients.offset, shl(5, recipients.length)) // shl by 5 is the same as mul by 32
+
+                // offsets of first recipient and value
+                let recipientOffset := recipients.offset
+                let valueOffset := values.offset
+
+                // infinite loop with break at end
+                for {
+
+                } 1 {
+
+                } {
+                    total := add(total, calldataload(valueOffset))
+
+                    recipientOffset := add(recipientOffset, 0x20)
+                    valueOffset := add(valueOffset, 0x20)
+
+                    if iszero(lt(recipientOffset, end)) {
+                        break
+                    }
+                }
             }
         }
+
         // transfer tokens to this contract
         require(token.transferFrom(msg.sender, address(this), total));
         // transfer tokens to recipients
