@@ -13,8 +13,8 @@ interface IERC20 {
 
 contract Multisend {
     function multisendEther(
-        address[] memory recipients,
-        uint256[] memory values
+        address[] calldata recipients,
+        uint256[] calldata values
     ) external payable {
         for (uint256 i = 0; i < recipients.length; i++)
             payable(recipients[i]).transfer(values[i]);
@@ -24,8 +24,8 @@ contract Multisend {
 
     function multisendToken(
         IERC20 token,
-        address[] memory recipients,
-        uint256[] memory values
+        address[] calldata recipients,
+        uint256[] calldata values
     ) external {
         uint256 total = 0;
         for (uint256 i = 0; i < recipients.length; i++) total += values[i];
