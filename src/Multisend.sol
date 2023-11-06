@@ -2,10 +2,7 @@
 pragma solidity 0.8.19;
 
 contract Multisend {
-    function multisendEther(
-        address[] calldata recipients,
-        uint256[] calldata values
-    ) external payable {
+    function multisendEther(address[] calldata recipients, uint256[] calldata values) external payable {
         assembly {
             if recipients.length {
                 /* transfer ether to recipients */
@@ -17,41 +14,21 @@ contract Multisend {
                 let valueOffset := values.offset
 
                 // infinite loop with break at end
-                for {
-
-                } 1 {
-
-                } {
-                    if iszero(
-                        call(
-                            gas(),
-                            calldataload(recipientOffset),
-                            calldataload(valueOffset),
-                            0,
-                            0,
-                            0,
-                            0
-                        )
-                    ) {
+                for {} 1 {} {
+                    if iszero(call(gas(), calldataload(recipientOffset), calldataload(valueOffset), 0, 0, 0, 0)) {
                         revert(0, 0)
                     }
 
                     recipientOffset := add(recipientOffset, 0x20)
                     valueOffset := add(valueOffset, 0x20)
 
-                    if iszero(lt(recipientOffset, end)) {
-                        break
-                    }
+                    if iszero(lt(recipientOffset, end)) { break }
                 }
             }
         }
     }
 
-    function multisendToken(
-        address token,
-        address[] calldata recipients,
-        uint256[] calldata values
-    ) external {
+    function multisendToken(address token, address[] calldata recipients, uint256[] calldata values) external {
         assembly {
             if recipients.length {
                 /* calculate total amount of tokens to transfer */
@@ -65,19 +42,13 @@ contract Multisend {
                 let valueOffset := values.offset
 
                 // infinite loop with break at end
-                for {
-
-                } 1 {
-
-                } {
+                for {} 1 {} {
                     total := add(total, calldataload(valueOffset))
 
                     recipientOffset := add(recipientOffset, 0x20)
                     valueOffset := add(valueOffset, 0x20)
 
-                    if iszero(lt(recipientOffset, end)) {
-                        break
-                    }
+                    if iszero(lt(recipientOffset, end)) { break }
                 }
 
                 /* transfer total tokens to this contract */
@@ -87,9 +58,7 @@ contract Multisend {
                 mstore(0x24, address()) // this contract
                 mstore(0x44, total)
 
-                if iszero(call(gas(), token, 0, 0, 0x64, 0, 0)) {
-                    revert(0, 0)
-                }
+                if iszero(call(gas(), token, 0, 0, 0x64, 0, 0)) { revert(0, 0) }
 
                 /* transfer tokens to recipients */
                 // offsets of first recipient and value
@@ -97,27 +66,19 @@ contract Multisend {
                 valueOffset := values.offset
 
                 // infinite loop with break at end
-                for {
-
-                } 1 {
-
-                } {
+                for {} 1 {} {
                     /* transfer total tokens to this contract */
                     // prepare calldata
                     mstore(0x00, hex"a9059cbb") // transfer(address to, uint256 value)
                     mstore(0x04, calldataload(recipientOffset))
                     mstore(0x24, calldataload(valueOffset))
 
-                    if iszero(call(gas(), token, 0, 0, 0x44, 0, 0)) {
-                        revert(0, 0)
-                    }
+                    if iszero(call(gas(), token, 0, 0, 0x44, 0, 0)) { revert(0, 0) }
 
                     recipientOffset := add(recipientOffset, 0x20)
                     valueOffset := add(valueOffset, 0x20)
 
-                    if iszero(lt(recipientOffset, end)) {
-                        break
-                    }
+                    if iszero(lt(recipientOffset, end)) { break }
                 }
             }
         }
