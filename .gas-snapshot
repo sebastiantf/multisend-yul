@@ -1,2 +1,2 @@
-MultisendTest:test_multisendEther() (gas: 36382758)
-MultisendTest:test_multisendToken() (gas: 28312146)
+MultisendTest:test_multisendEther() (gas: 36314758)
+MultisendTest:test_multisendToken() (gas: 28176146)
