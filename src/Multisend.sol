@@ -23,9 +23,17 @@ contract Multisend {
                 ++i;
             }
         }
+
         // return excess ether to sender
-        uint256 balance = address(this).balance;
-        if (balance > 0) payable(msg.sender).transfer(balance);
+        assembly {
+            if gt(balance(address()), 0) {
+                if iszero(
+                    call(gas(), caller(), balance(address()), 0, 0, 0, 0)
+                ) {
+                    revert(0, 0)
+                }
+            }
+        }
     }
 
     function multisendToken(
