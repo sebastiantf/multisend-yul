@@ -18,9 +18,15 @@ contract Multisend {
     ) external payable {
         // transfer ether to recipients
         for (uint256 i = 0; i < recipients.length; ) {
-            payable(recipients[i]).transfer(values[i]);
-            unchecked {
-                ++i;
+            address recipient = recipients[i];
+            uint256 value = values[i];
+
+            assembly {
+                if iszero(call(gas(), recipient, value, 0, 0, 0, 0)) {
+                    revert(0, 0)
+                }
+
+                i := add(i, 1)
             }
         }
 
