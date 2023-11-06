@@ -24,7 +24,7 @@ contract Multisend {
 
                 // offsets of first recipient and value
                 let recipientOffset := recipients.offset
-                let valueOffset := values.offset
+                let diff := sub(values.offset, recipients.offset)
 
                 // infinite loop with break at end
                 for {
@@ -36,7 +36,7 @@ contract Multisend {
                         call(
                             gas(),
                             calldataload(recipientOffset),
-                            calldataload(valueOffset),
+                            calldataload(add(recipientOffset, diff)),
                             0,
                             0,
                             0,
@@ -47,7 +47,6 @@ contract Multisend {
                     }
 
                     recipientOffset := add(recipientOffset, 0x20)
-                    valueOffset := add(valueOffset, 0x20)
 
                     if iszero(lt(recipientOffset, end)) {
                         break
