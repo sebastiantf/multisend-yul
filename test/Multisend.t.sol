@@ -80,4 +80,19 @@ contract MultisendTest is Test {
         assertEq(address(multisend).balance, 0);
         assertEq(address(user).balance, 100 wei);
     }
+
+    function test_multisendEtherCompareGaslite() public {
+        payable(user).transfer(totalEther);
+        vm.startPrank(user);
+
+        address[] memory recipients = new address[](totalTokens);
+        uint256[] memory amounts = new uint256[](totalTokens);
+        for (uint256 i = 0; i < totalTokens; i++) {
+            recipients[i] = vm.addr(2);
+            amounts[i] = 0.001 ether;
+        }
+
+        multisend.multisendEther{value: totalEther}(recipients, amounts);
+        vm.stopPrank();
+    }
 }

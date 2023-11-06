@@ -1,3 +1,4 @@
 MultisendTest:test_multisendEther() (gas: 35919358)
-MultisendTest:test_multisendEtherShouldTransferExcessEth() (gas: 35951477)
+MultisendTest:test_multisendEtherCompareGaslite() (gas: 7927195)
+MultisendTest:test_multisendEtherShouldTransferExcessEth() (gas: 35951499)
 MultisendTest:test_multisendToken() (gas: 27372717)
